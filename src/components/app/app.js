@@ -15,11 +15,12 @@ class App extends Component{
         super(props);
         this.state = {
             data: [
-                {name: 'John Smith', salary: 800, increase: false, id: 1},
-                {name: 'Alex Miller', salary: 3500, increase: true, id: 2},
-                {name: 'Dan Brown', salary: 2000, increase: false, id: 3}, 
+                {name: 'John Smith', salary: 800, increase: false, rise: false, id: 1},
+                {name: 'Alex Miller', salary: 3500, increase: false, rise: false, id: 2},
+                {name: 'Dan Brown', salary: 2000, increase: false, rise: false, id: 3}, 
             ],
         }
+        this.maxId = 4;
     }
 
     deleteItem = (id) => {
@@ -30,10 +31,72 @@ class App extends Component{
         })
     }
 
+    addItem = (name, salary) => {
+        const newItem = {
+            name, 
+            salary,
+            increase: false,
+            rise: false,
+            id: this.maxId++
+        }
+        if (newItem.name.length > 3 && newItem.salary.length > 0 && newItem.salary > 0){
+            this.setState(({data}) => {
+                const newArr = [...data, newItem];
+                return {
+                    data: newArr
+                }
+            });
+        }
+    }
+
+    // Эта функция выделяет пользователя по нажатию на иконку "печенька"
+    onToggleIncrease = (id) => {
+        // Первый вариант решения с изменением нужного объекта в массиве data:
+        // this.setState(({data}) => {
+        //     const index = data.findIndex(elem => elem.id === id);
+
+        //     const old = data[index];
+        //     const newItem = {...old, increase: !old.increase};
+        //     const newArr = [...data.slice(0, index), newItem, ...data.slice(index + 1)];
+
+        //     return{
+        //         data: newArr,
+        //     }
+        // })
+
+        // Второй вариант через map:
+        this.setState(({data}) => ({
+            data: data.map(item => {
+                if(item.id === id){
+                    return {...item, increase: !item.increase};
+                } else {
+                return item;
+                }
+            })
+        }))
+    }
+
+    onToggleRise = (id) => {
+        this.setState(({data}) => ({
+            data: data.map(item => {
+                if(item.id === id){
+                    return {...item, rise: !item.rise};
+                } else {
+                    return item;
+                }
+            })
+        }))
+    }
+
     render(){
+        const employees = this.state.data.length;
+        const increased = this.state.data.filter(item => item.increase === true).length;
+
         return (
             <div className="app">
-                <AppInfo/>
+                <AppInfo employees={employees}
+                increased={increased}
+                />
     
                 <div className="search-panel">
                     <SearchPanel/>
@@ -42,9 +105,11 @@ class App extends Component{
     
                 <EmployeesList 
                     data={this.state.data}
-                    onDelete={this.deleteItem}/>
+                    onDelete={this.deleteItem}
+                    onToggleIncrease={this.onToggleIncrease}
+                    onToggleRise={this.onToggleRise}/>
     
-                <EmployeesAddForm/>
+                <EmployeesAddForm onAdd={this.addItem}/>
             </div>
         )
     }
