@@ -7,7 +7,11 @@ For example user can create a new employees and assign some salaries for them. A
 
 To run application you need to download all its files and open them in some code editor. Then use command "npm start" in the terminal.
 
+You can look at the screenshot below.
+
 ### `npm start`
 
 Runs the app in the development mode.\
 Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+
+![Screenshot](https://github.com/Sergei-Shvets/Employees-accounting-portfolio/blob/main/scrshot.jpg)
